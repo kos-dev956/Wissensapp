@@ -1,5 +1,5 @@
 // Wissensapp Service Worker – cached die App-Dateien für Offline-Betrieb
-const CACHE_NAME = 'wissensapp-v1';
+const CACHE_NAME = 'wissensapp-v2';
 const ASSETS = [
   './',
   './index.html',

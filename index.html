@@ -10,11 +10,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Wissen">
-<meta name="theme-color" content="#F4F1EA">
+<meta name="theme-color" content="#F4F1EA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1A1815" media="(prefers-color-scheme: dark)">
 <style>
   :root {
     --bg: #F4F1EA;
     --card: #FBF9F4;
+    --input-bg: #FFFFFF;
     --ink: #2A2724;
     --muted: #7A736B;
     --accent: #B05630;
@@ -24,37 +26,55 @@
     --wrong: #A04040;
     --wrong-soft: #EAD2D2;
     --border: #E5DFD3;
+    --option-hover: #FFF8F3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1A1815;
+      --card: #25221E;
+      --input-bg: #1F1C19;
+      --ink: #ECE6DA;
+      --muted: #9C9388;
+      --accent: #D9774E;
+      --accent-soft: #4A2F22;
+      --correct: #7CB088;
+      --correct-soft: #2A3D2E;
+      --wrong: #D68A8A;
+      --wrong-soft: #3D2727;
+      --border: #3A352F;
+      --option-hover: #2D2924;
+    }
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
   body {
     min-height: 100vh; display: flex; flex-direction: column; align-items: center;
-    padding: max(24px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(48px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+    padding: max(16px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
   }
   .app { width: 100%; max-width: 640px; }
-  header { text-align: center; margin-bottom: 28px; }
-  header h1 { font-family: Georgia, "Times New Roman", serif; font-style: italic; font-weight: 500; font-size: 32px; margin: 0 0 6px; letter-spacing: -0.5px; }
-  header p { color: var(--muted); margin: 0; font-size: 14px; }
-  .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 28px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+  header { text-align: center; margin-bottom: 16px; }
+  header h1 { font-family: Georgia, "Times New Roman", serif; font-style: italic; font-weight: 500; font-size: 28px; margin: 0 0 4px; letter-spacing: -0.5px; }
+  header p { color: var(--muted); margin: 0; font-size: 13px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 18px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
   label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
   input[type="password"], input[type="text"] {
     width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
-    background: white; font-size: 14px; color: var(--ink); font-family: inherit;
+    background: var(--input-bg); font-size: 14px; color: var(--ink); font-family: inherit;
   }
   input:focus { outline: none; border-color: var(--accent); }
   .hint { font-size: 12px; color: var(--muted); margin-top: 6px; }
   .hint a { color: var(--accent); }
-  .topics { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; margin: 18px 0 22px; }
+  .topics { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin: 8px 0 16px; }
   .topic-chip {
-    border: 1px solid var(--border); background: white; padding: 10px 12px; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--input-bg); padding: 10px 12px; border-radius: 10px;
     cursor: pointer; text-align: left; font-family: inherit; font-size: 14px; color: var(--ink);
     transition: all 0.15s ease;
   }
   .topic-chip:hover { border-color: var(--accent); }
   .topic-chip.selected { background: var(--accent); color: white; border-color: var(--accent); }
-  .difficulty-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 8px 0 22px; }
+  .difficulty-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 6px 0 14px; }
   .diff-chip {
-    border: 1px solid var(--border); background: white; padding: 10px 8px; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--input-bg); padding: 10px 8px; border-radius: 10px;
     cursor: pointer; text-align: center; font-family: inherit; font-size: 14px; color: var(--ink);
     transition: all 0.15s ease;
   }
@@ -78,25 +98,25 @@
   .meta-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; font-size: 13px; color: var(--muted); }
   .streak { background: var(--accent-soft); color: var(--accent); padding: 4px 10px; border-radius: 999px; font-weight: 500; }
   .question {
-    font-family: Georgia, "Times New Roman", serif; font-size: 22px; line-height: 1.4;
-    margin: 0 0 22px; color: var(--ink);
+    font-family: Georgia, "Times New Roman", serif; font-size: 24px; line-height: 1.35;
+    margin: 0 0 20px; color: var(--ink);
   }
   .options { display: flex; flex-direction: column; gap: 10px; }
   .option {
-    text-align: left; padding: 14px 16px; border: 1px solid var(--border); background: white;
-    border-radius: 10px; cursor: pointer; font-family: inherit; font-size: 15px; color: var(--ink);
-    transition: all 0.15s ease;
+    text-align: left; padding: 16px 16px; border: 1px solid var(--border); background: var(--input-bg);
+    border-radius: 10px; cursor: pointer; font-family: inherit; font-size: 17px; color: var(--ink);
+    transition: all 0.15s ease; line-height: 1.35;
   }
-  .option:hover:not(:disabled) { border-color: var(--accent); background: #FFF8F3; }
+  .option:hover:not(:disabled) { border-color: var(--accent); background: var(--option-hover); }
   .option:disabled { cursor: default; }
   .option.correct { background: var(--correct-soft); border-color: var(--correct); color: var(--correct); }
   .option.wrong { background: var(--wrong-soft); border-color: var(--wrong); color: var(--wrong); }
   .option .letter { display: inline-block; width: 22px; font-weight: 600; color: var(--muted); }
   .option.correct .letter, .option.wrong .letter { color: inherit; }
 
-  .feedback { margin-top: 20px; padding: 16px; background: white; border: 1px solid var(--border); border-radius: 10px; }
+  .feedback { margin-top: 20px; padding: 16px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; }
   .feedback h3 { margin: 0 0 8px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); font-weight: 600; }
-  .feedback p { margin: 0 0 12px; line-height: 1.55; font-size: 14px; }
+  .feedback p { margin: 0 0 12px; line-height: 1.55; font-size: 15px; }
   .feedback p:last-child { margin-bottom: 0; }
   .fun-fact { background: var(--accent-soft); padding: 12px; border-radius: 8px; font-size: 14px; line-height: 1.5; }
   .fun-fact strong { color: var(--accent); }
@@ -116,8 +136,8 @@
   .hidden { display: none; }
   footer { margin-top: 24px; text-align: center; font-size: 12px; color: var(--muted); }
   .bank-info {
-    background: white; border: 1px solid var(--border); border-radius: 10px;
-    padding: 10px 12px; margin: 16px 0 0; font-size: 13px; color: var(--muted);
+    background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px;
+    padding: 8px 12px; margin: 12px 0 0; font-size: 13px; color: var(--muted);
     display: flex; justify-content: space-between; gap: 8px;
   }
   .bank-info b { color: var(--ink); font-weight: 600; }
@@ -143,10 +163,9 @@
   <!-- Setup screen -->
   <div id="setup-screen" class="card">
     <label for="api-key">Claude API-Schlüssel <span style="opacity: 0.6;">(optional)</span></label>
-    <input type="password" id="api-key" placeholder="sk-ant-... – leer lassen für Offline-Modus" autocomplete="off">
-    <div class="hint">Ohne Schlüssel nutzt du die kuratierte Fragenbank. Mit Schlüssel generiert Claude neue Fragen und ergänzt deine Bank dauerhaft. Der Schlüssel bleibt nur in deinem Browser. Holen auf <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>.</div>
+    <input type="password" id="api-key" placeholder="sk-ant-… leer = Offline-Modus" autocomplete="off">
 
-    <div style="margin-top: 22px;">
+    <div style="margin-top: 14px;">
       <label>Themen auswählen</label>
       <div class="topics" id="topic-list"></div>
     </div>
@@ -156,10 +175,10 @@
       <div class="difficulty-row" id="difficulty-list"></div>
     </div>
 
-    <button class="primary" id="start-btn" disabled>Quiz starten</button>
+    <button class="primary" id="start-btn" disabled style="margin-top: 4px;">Quiz starten</button>
     <div id="bank-info" class="bank-info">
-      <span>Deine Bank: <b id="bank-total">–</b> Fragen</span>
-      <span><b id="bank-seen">–</b> schon gesehen</span>
+      <span>Bank: <b id="bank-total">–</b> Fragen</span>
+      <span><b id="bank-seen">–</b> gesehen</span>
     </div>
     <div id="setup-error" class="error hidden"></div>
   </div>
