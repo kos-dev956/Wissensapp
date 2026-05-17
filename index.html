@@ -149,6 +149,13 @@
     display: flex; justify-content: space-between; gap: 8px;
   }
   .bank-info b { color: var(--ink); font-weight: 600; }
+  .bank-actions { display: flex; gap: 8px; margin: 8px 0 0; }
+  .bank-btn {
+    flex: 1; background: transparent; border: 1px solid var(--border); color: var(--muted);
+    padding: 8px 10px; border-radius: 8px; font-size: 12px; cursor: pointer;
+    font-family: inherit; transition: all 0.15s ease;
+  }
+  .bank-btn:hover { color: var(--ink); border-color: var(--ink); }
   .review-badge {
     background: var(--accent-soft); color: var(--accent); padding: 2px 8px;
     border-radius: 999px; font-size: 11px; font-weight: 500; margin-left: 6px;
@@ -195,6 +202,11 @@
     <div id="bank-info" class="bank-info">
       <span>Bank: <b id="bank-total">–</b> Fragen</span>
       <span><b id="bank-seen">–</b> gesehen</span>
+    </div>
+    <div class="bank-actions">
+      <button class="bank-btn" id="export-btn" title="Bank als JSON-Datei sichern">↓ Bank exportieren</button>
+      <button class="bank-btn" id="import-btn" title="Bank aus JSON-Datei laden">↑ Bank importieren</button>
+      <input type="file" id="import-file" accept=".json,application/json" style="display: none;">
     </div>
     <div id="setup-error" class="error hidden"></div>
   </div>
@@ -355,6 +367,76 @@ function recordAnswer(qId, correct) {
   saveStats();
 }
 
+function exportBank() {
+  const data = {
+    app: 'wissensapp',
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    userQuestions: userQuestions,
+    stats: stats,
+    deletedIds: [...deletedIds],
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const dateStr = new Date().toISOString().split('T')[0];
+  a.download = `wissensapp-bank-${dateStr}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function importBank(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.app !== 'wissensapp' && !data.userQuestions) {
+        throw new Error('Datei ist keine gültige Wissensapp-Bank.');
+      }
+      const importedQuestions = Array.isArray(data.userQuestions) ? data.userQuestions : [];
+      const importedStats = (data.stats && typeof data.stats === 'object') ? data.stats : {};
+      const importedDeleted = Array.isArray(data.deletedIds) ? data.deletedIds : [];
+
+      // KI-Fragen mergen (per ID, keine Duplikate)
+      const existingIds = new Set(userQuestions.map(q => q.id));
+      const newQuestions = importedQuestions.filter(q => q && q.id && !existingIds.has(q.id));
+      userQuestions = userQuestions.concat(newQuestions);
+      saveUserQuestions();
+
+      // Statistik mergen (Counts addieren, lastSeen max)
+      for (const [id, s] of Object.entries(importedStats)) {
+        if (stats[id]) {
+          stats[id].correct = (stats[id].correct || 0) + (s.correct || 0);
+          stats[id].wrong = (stats[id].wrong || 0) + (s.wrong || 0);
+          stats[id].lastSeenMs = Math.max(stats[id].lastSeenMs || 0, s.lastSeenMs || 0);
+        } else {
+          stats[id] = { correct: s.correct || 0, wrong: s.wrong || 0, lastSeenMs: s.lastSeenMs || 0 };
+        }
+      }
+      saveStats();
+
+      // Lösch-Liste mergen (Vereinigung)
+      for (const id of importedDeleted) deletedIds.add(id);
+      saveDeleted();
+
+      // Bank neu zusammenstellen + UI aktualisieren
+      bank = (window.QUESTIONS || []).concat(userQuestions).filter(q => !deletedIds.has(q.id));
+      renderTopics();
+      renderDifficulties();
+      updateBankInfo();
+
+      alert(`Import erfolgreich!\n${newQuestions.length} neue Fragen hinzugefügt.\nBank gesamt: ${bank.length} Fragen.`);
+    } catch (err) {
+      alert('Import fehlgeschlagen: ' + (err.message || 'Unbekannter Fehler'));
+    }
+  };
+  reader.onerror = () => alert('Datei konnte nicht gelesen werden.');
+  reader.readAsText(file);
+}
+
 function updateBankInfo() {
   const infoEl = $('bank-info');
   if (!infoEl) return;
@@ -445,6 +527,14 @@ $('start-btn').onclick = () => {
   state.recentShownIds = [];
   state.lastShownId = null;
   loadNextQuestion();
+};
+
+$('export-btn').onclick = exportBank;
+$('import-btn').onclick = () => $('import-file').click();
+$('import-file').onchange = (e) => {
+  const file = e.target.files && e.target.files[0];
+  if (file) importBank(file);
+  e.target.value = ''; // erneutes Importieren derselben Datei ermöglichen
 };
 
 $('reset-link').onclick = (e) => {
