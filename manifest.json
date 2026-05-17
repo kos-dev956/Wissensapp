@@ -1,0 +1,20 @@
+{
+  "name": "Wissensapp",
+  "short_name": "Wissen",
+  "description": "Quiz für Allgemeinwissen – mit kuratierter Fragenbank und Claude-Erweiterung",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F4F1EA",
+  "theme_color": "#B05630",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Allgemeinwissen Quiz</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Wissen">
+<meta name="theme-color" content="#F4F1EA">
+<style>
+  :root {
+    --bg: #F4F1EA;
+    --card: #FBF9F4;
+    --ink: #2A2724;
+    --muted: #7A736B;
+    --accent: #B05630;
+    --accent-soft: #E8C9B8;
+    --correct: #4A7C59;
+    --correct-soft: #D6E5D9;
+    --wrong: #A04040;
+    --wrong-soft: #EAD2D2;
+    --border: #E5DFD3;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+  body {
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+    padding: max(24px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(48px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  }
+  .app { width: 100%; max-width: 640px; }
+  header { text-align: center; margin-bottom: 28px; }
+  header h1 { font-family: Georgia, "Times New Roman", serif; font-style: italic; font-weight: 500; font-size: 32px; margin: 0 0 6px; letter-spacing: -0.5px; }
+  header p { color: var(--muted); margin: 0; font-size: 14px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 28px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+  label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+  input[type="password"], input[type="text"] {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
+    background: white; font-size: 14px; color: var(--ink); font-family: inherit;
+  }
+  input:focus { outline: none; border-color: var(--accent); }
+  .hint { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .hint a { color: var(--accent); }
+  .topics { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; margin: 18px 0 22px; }
+  .topic-chip {
+    border: 1px solid var(--border); background: white; padding: 10px 12px; border-radius: 10px;
+    cursor: pointer; text-align: left; font-family: inherit; font-size: 14px; color: var(--ink);
+    transition: all 0.15s ease;
+  }
+  .topic-chip:hover { border-color: var(--accent); }
+  .topic-chip.selected { background: var(--accent); color: white; border-color: var(--accent); }
+  .difficulty-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 8px 0 22px; }
+  .diff-chip {
+    border: 1px solid var(--border); background: white; padding: 10px 8px; border-radius: 10px;
+    cursor: pointer; text-align: center; font-family: inherit; font-size: 14px; color: var(--ink);
+    transition: all 0.15s ease;
+  }
+  .diff-chip:hover { border-color: var(--accent); }
+  .diff-chip.selected { background: var(--accent); color: white; border-color: var(--accent); }
+  .diff-chip .diff-sub { display: block; font-size: 11px; opacity: 0.7; margin-top: 2px; }
+  button.primary {
+    background: var(--accent); color: white; border: none; padding: 12px 20px; border-radius: 10px;
+    font-size: 15px; font-weight: 500; cursor: pointer; font-family: inherit; width: 100%;
+    transition: opacity 0.15s ease;
+  }
+  button.primary:hover { opacity: 0.9; }
+  button.primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  button.secondary {
+    background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 10px 16px; border-radius: 10px;
+    font-size: 14px; cursor: pointer; font-family: inherit;
+  }
+  button.secondary:hover { color: var(--ink); border-color: var(--ink); }
+
+  /* Quiz screen */
+  .meta-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; font-size: 13px; color: var(--muted); }
+  .streak { background: var(--accent-soft); color: var(--accent); padding: 4px 10px; border-radius: 999px; font-weight: 500; }
+  .question {
+    font-family: Georgia, "Times New Roman", serif; font-size: 22px; line-height: 1.4;
+    margin: 0 0 22px; color: var(--ink);
+  }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option {
+    text-align: left; padding: 14px 16px; border: 1px solid var(--border); background: white;
+    border-radius: 10px; cursor: pointer; font-family: inherit; font-size: 15px; color: var(--ink);
+    transition: all 0.15s ease;
+  }
+  .option:hover:not(:disabled) { border-color: var(--accent); background: #FFF8F3; }
+  .option:disabled { cursor: default; }
+  .option.correct { background: var(--correct-soft); border-color: var(--correct); color: var(--correct); }
+  .option.wrong { background: var(--wrong-soft); border-color: var(--wrong); color: var(--wrong); }
+  .option .letter { display: inline-block; width: 22px; font-weight: 600; color: var(--muted); }
+  .option.correct .letter, .option.wrong .letter { color: inherit; }
+
+  .feedback { margin-top: 20px; padding: 16px; background: white; border: 1px solid var(--border); border-radius: 10px; }
+  .feedback h3 { margin: 0 0 8px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); font-weight: 600; }
+  .feedback p { margin: 0 0 12px; line-height: 1.55; font-size: 14px; }
+  .feedback p:last-child { margin-bottom: 0; }
+  .fun-fact { background: var(--accent-soft); padding: 12px; border-radius: 8px; font-size: 14px; line-height: 1.5; }
+  .fun-fact strong { color: var(--accent); }
+
+  .actions { display: flex; gap: 10px; margin-top: 18px; }
+  .actions button { flex: 1; }
+
+  .loading { text-align: center; padding: 40px 20px; color: var(--muted); }
+  .spinner {
+    display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border);
+    border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite;
+    vertical-align: middle; margin-right: 8px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error { background: var(--wrong-soft); color: var(--wrong); padding: 12px; border-radius: 8px; font-size: 14px; margin-top: 12px; }
+  .hidden { display: none; }
+  footer { margin-top: 24px; text-align: center; font-size: 12px; color: var(--muted); }
+  .bank-info {
+    background: white; border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px 12px; margin: 16px 0 0; font-size: 13px; color: var(--muted);
+    display: flex; justify-content: space-between; gap: 8px;
+  }
+  .bank-info b { color: var(--ink); font-weight: 600; }
+  .review-badge {
+    background: var(--accent-soft); color: var(--accent); padding: 2px 8px;
+    border-radius: 999px; font-size: 11px; font-weight: 500; margin-left: 6px;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .new-badge {
+    background: var(--correct-soft); color: var(--correct); padding: 2px 8px;
+    border-radius: 999px; font-size: 11px; font-weight: 500; margin-left: 6px;
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Allgemeinwissen</h1>
+    <p>Ein bisschen klüger, jeden Tag</p>
+  </header>
+
+  <!-- Setup screen -->
+  <div id="setup-screen" class="card">
+    <label for="api-key">Claude API-Schlüssel <span style="opacity: 0.6;">(optional)</span></label>
+    <input type="password" id="api-key" placeholder="sk-ant-... – leer lassen für Offline-Modus" autocomplete="off">
+    <div class="hint">Ohne Schlüssel nutzt du die kuratierte Fragenbank. Mit Schlüssel generiert Claude neue Fragen und ergänzt deine Bank dauerhaft. Der Schlüssel bleibt nur in deinem Browser. Holen auf <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>.</div>
+
+    <div style="margin-top: 22px;">
+      <label>Themen auswählen</label>
+      <div class="topics" id="topic-list"></div>
+    </div>
+
+    <div>
+      <label>Schwierigkeit</label>
+      <div class="difficulty-row" id="difficulty-list"></div>
+    </div>
+
+    <button class="primary" id="start-btn" disabled>Quiz starten</button>
+    <div id="bank-info" class="bank-info">
+      <span>Deine Bank: <b id="bank-total">–</b> Fragen</span>
+      <span><b id="bank-seen">–</b> schon gesehen</span>
+    </div>
+    <div id="setup-error" class="error hidden"></div>
+  </div>
+
+  <!-- Quiz screen -->
+  <div id="quiz-screen" class="card hidden">
+    <div class="meta-row">
+      <span><span id="current-topic"></span> <span id="current-difficulty" style="opacity: 0.7;"></span></span>
+      <span class="streak" id="streak-display">🔥 0</span>
+    </div>
+    <div id="quiz-content"></div>
+  </div>
+
+  <footer>Powered by Claude · <a href="#" id="reset-link" style="color: inherit;">Neu starten</a></footer>
+</div>
+
+<script src="questions.js"></script>
+<script>
+const TOPICS = [
+  { id: 'mix', label: '🎲 Bunte Mischung', prompt: 'eine zufällige Mischung aus Allgemeinwissens-Themen' },
+  { id: 'geschichte', label: '📜 Geschichte', prompt: 'Welt- und Europäische Geschichte (Antike bis 21. Jahrhundert)' },
+  { id: 'geografie', label: '🌍 Geografie', prompt: 'Länder, Hauptstädte, Flüsse, Gebirge, geografische Besonderheiten' },
+  { id: 'natur', label: '🔬 Naturwissenschaft', prompt: 'Physik, Chemie, Biologie, Astronomie (Grundlagen und faszinierende Fakten)' },
+  { id: 'kunst', label: '🎨 Kunst & Literatur', prompt: 'Bildende Kunst, Literatur, Musik, berühmte Werke und Künstler' },
+  { id: 'politik', label: '⚖️ Politik & Gesellschaft', prompt: 'Staatsformen, internationale Organisationen, gesellschaftliche Strukturen' },
+  { id: 'technik', label: '⚙️ Technik & Erfindungen', prompt: 'wichtige Erfindungen, Technologiegeschichte, wie Dinge funktionieren' },
+  { id: 'philosophie', label: '💭 Philosophie & Religion', prompt: 'Philosophische Strömungen, Weltreligionen, große Denker' },
+  { id: 'sprache', label: '🗣️ Sprache & Etymologie', prompt: 'Sprachfamilien, Wortherkunft, Redewendungen, Grammatik-Kuriositäten' },
+  { id: 'wirtschaft', label: '💰 Wirtschaft', prompt: 'Wirtschaftsgrundlagen, berühmte Konzepte, historische Ereignisse' },
+];
+
+const DIFFICULTIES = [
+  { id: 'leicht',  label: 'Leicht',  sub: 'Grundwissen',     hint: 'einfach – Schulwissen, klar erkennbare richtige Antwort' },
+  { id: 'mittel',  label: 'Mittel',  sub: 'Für Interessierte', hint: 'mittel – nicht trivial, aber lösbar für interessierte Laien' },
+  { id: 'schwer',  label: 'Schwer',  sub: 'Anspruchsvoll',   hint: 'anspruchsvoll – Detailwissen, knifflige Ablenker, fordert auch Belesene heraus' },
+];
+
+const MODEL = 'claude-haiku-4-5';
+const STORAGE_KEY = 'wissensapp_apikey_v1';
+const DIFFICULTY_KEY = 'wissensapp_difficulty_v1';
+const USER_QUESTIONS_KEY = 'wissensapp_user_questions_v1';
+const STATS_KEY = 'wissensapp_stats_v1';
+
+const state = {
+  apiKey: '',
+  selectedTopic: null,
+  selectedDifficulty: null,
+  streak: 0,
+  currentQuestion: null,
+  currentSource: 'bank', // 'bank' | 'review' | 'new'
+  sessionCounter: 0,
+  lastShownId: null,
+  recentShownIds: [], // letzte ~5 IDs, niemals direkt wiederholen
+};
+
+// Bank = built-in QUESTIONS + Haiku-generierte aus localStorage
+let userQuestions = [];
+let bank = [];
+let stats = {}; // id → { lastSeenMs, correct, wrong }
+
+function loadBankAndStats() {
+  try { userQuestions = JSON.parse(localStorage.getItem(USER_QUESTIONS_KEY) || '[]'); } catch { userQuestions = []; }
+  try { stats = JSON.parse(localStorage.getItem(STATS_KEY) || '{}'); } catch { stats = {}; }
+  bank = (window.QUESTIONS || []).concat(userQuestions);
+}
+function saveUserQuestions() { localStorage.setItem(USER_QUESTIONS_KEY, JSON.stringify(userQuestions)); }
+function saveStats() { localStorage.setItem(STATS_KEY, JSON.stringify(stats)); }
+
+function filterPool(topicId, difficultyId) {
+  return bank.filter(q =>
+    (topicId === 'mix' || q.topic === topicId) &&
+    q.difficulty === difficultyId
+  );
+}
+
+function pickWeightedReview(seen) {
+  // Älter + öfter falsch = höheres Gewicht
+  const now = Date.now();
+  const weights = seen.map(q => {
+    const s = stats[q.id] || {};
+    const days = (now - (s.lastSeenMs || 0)) / 86400000;
+    const errBias = ((s.wrong || 0) - (s.correct || 0)) * 2;
+    return Math.max(0.2, 1 + days + errBias);
+  });
+  const sum = weights.reduce((a, b) => a + b, 0);
+  let r = Math.random() * sum;
+  for (let i = 0; i < seen.length; i++) {
+    r -= weights[i];
+    if (r <= 0) return seen[i];
+  }
+  return seen[seen.length - 1];
+}
+
+function pickFromBank(pool, forceReview = false) {
+  if (pool.length === 0) return null;
+  // Niemals eine der zuletzt gezeigten Fragen direkt wieder ziehen, solange genug andere da sind
+  const recent = new Set(state.recentShownIds);
+  const filtered = pool.length > recent.size ? pool.filter(q => !recent.has(q.id)) : pool;
+
+  const seen = filtered.filter(q => stats[q.id]);
+  const unseen = filtered.filter(q => !stats[q.id]);
+
+  // Erzwungenes Review nur wenn genug Material vorhanden ist
+  if (forceReview && seen.length >= 1) return pickWeightedReview(seen);
+
+  // Bevorzugt ungesehen; gelegentlich Review – aber erst ab mindestens 3 gesehenen
+  if (unseen.length > 0) {
+    if (seen.length >= 3 && Math.random() < 0.20) return pickWeightedReview(seen);
+    return unseen[Math.floor(Math.random() * unseen.length)];
+  }
+  if (seen.length > 0) return pickWeightedReview(seen);
+  return null;
+}
+
+function rememberShown(id) {
+  if (!id) return;
+  state.lastShownId = id;
+  state.recentShownIds.push(id);
+  // Fenster aus 5 Einträgen halten
+  if (state.recentShownIds.length > 5) state.recentShownIds.shift();
+}
+
+function recordAnswer(qId, correct) {
+  const s = stats[qId] || { correct: 0, wrong: 0, lastSeenMs: 0 };
+  if (correct) s.correct++; else s.wrong++;
+  s.lastSeenMs = Date.now();
+  stats[qId] = s;
+  saveStats();
+}
+
+function updateBankInfo() {
+  const total = bank.length;
+  const seenCount = bank.filter(q => stats[q.id]).length;
+  const totalEl = $('bank-total'); const seenEl = $('bank-seen');
+  if (totalEl) totalEl.textContent = total;
+  if (seenEl) seenEl.textContent = seenCount;
+}
+
+const $ = (id) => document.getElementById(id);
+
+// Setup screen
+function renderTopics() {
+  const list = $('topic-list');
+  list.innerHTML = '';
+  TOPICS.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'topic-chip';
+    btn.textContent = t.label;
+    btn.onclick = () => {
+      state.selectedTopic = t;
+      document.querySelectorAll('.topic-chip').forEach(c => c.classList.remove('selected'));
+      btn.classList.add('selected');
+      updateStartButton();
+    };
+    list.appendChild(btn);
+  });
+}
+
+function renderDifficulties() {
+  const list = $('difficulty-list');
+  list.innerHTML = '';
+  DIFFICULTIES.forEach(d => {
+    const btn = document.createElement('button');
+    btn.className = 'diff-chip';
+    btn.innerHTML = `${d.label}<span class="diff-sub">${d.sub}</span>`;
+    btn.onclick = () => {
+      state.selectedDifficulty = d;
+      localStorage.setItem(DIFFICULTY_KEY, d.id);
+      document.querySelectorAll('.diff-chip').forEach(c => c.classList.remove('selected'));
+      btn.classList.add('selected');
+      updateStartButton();
+    };
+    if (state.selectedDifficulty && state.selectedDifficulty.id === d.id) {
+      btn.classList.add('selected');
+    }
+    list.appendChild(btn);
+  });
+}
+
+function updateStartButton() {
+  // API-Key ist optional – nur Thema und Schwierigkeit sind Pflicht
+  const hasTopic = !!state.selectedTopic;
+  const hasDiff = !!state.selectedDifficulty;
+  $('start-btn').disabled = !(hasTopic && hasDiff);
+}
+
+$('api-key').addEventListener('input', (e) => {
+  state.apiKey = e.target.value.trim();
+  localStorage.setItem(STORAGE_KEY, state.apiKey);
+  updateStartButton();
+});
+
+$('start-btn').onclick = () => {
+  if (!state.selectedTopic || !state.selectedDifficulty) return;
+  $('setup-screen').classList.add('hidden');
+  $('quiz-screen').classList.remove('hidden');
+  $('current-topic').textContent = state.selectedTopic.label;
+  $('current-difficulty').textContent = '· ' + state.selectedDifficulty.label;
+  state.sessionCounter = 0;
+  state.recentShownIds = [];
+  state.lastShownId = null;
+  loadNextQuestion();
+};
+
+$('reset-link').onclick = (e) => {
+  e.preventDefault();
+  $('quiz-screen').classList.add('hidden');
+  $('setup-screen').classList.remove('hidden');
+  state.streak = 0;
+  state.sessionCounter = 0;
+  state.recentShownIds = [];
+  state.lastShownId = null;
+  updateBankInfo();
+};
+
+// Load saved state
+(function init() {
+  loadBankAndStats();
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    $('api-key').value = saved;
+    state.apiKey = saved;
+  }
+  const savedDiff = localStorage.getItem(DIFFICULTY_KEY);
+  if (savedDiff) {
+    const found = DIFFICULTIES.find(d => d.id === savedDiff);
+    if (found) state.selectedDifficulty = found;
+  }
+  renderTopics();
+  renderDifficulties();
+  updateStartButton();
+  updateBankInfo();
+})();
+
+// Quiz logic
+async function loadNextQuestion() {
+  const content = $('quiz-content');
+  const pool = filterPool(state.selectedTopic.id, state.selectedDifficulty.id);
+  const hasKey = !!state.apiKey && state.apiKey.length > 10;
+  const recent = new Set(state.recentShownIds);
+  const seenInPool = pool.filter(q => stats[q.id] && !recent.has(q.id));
+  // Spaced-Repetition: jede 4. Frage ist ein Review, sofern genug Material da ist und es nicht die zuletzt gezeigte ist
+  const reviewSlot = state.sessionCounter > 0 && state.sessionCounter % 4 === 0 && seenInPool.length >= 1;
+  const useApi = hasKey && !reviewSlot;
+
+  if (useApi) {
+    content.innerHTML = `<div class="loading"><span class="spinner"></span>Neue Frage wird generiert...</div>`;
+  } else {
+    content.innerHTML = `<div class="loading"><span class="spinner"></span>Frage wird geladen...</div>`;
+  }
+
+  try {
+    let q;
+    if (useApi) {
+      const recentTexts = pool.filter(qq => stats[qq.id]).slice(-10).map(qq => qq.question);
+      const fresh = await fetchQuestion(state.selectedTopic, state.selectedDifficulty, recentTexts);
+      // Mit eindeutiger ID in die Bank aufnehmen
+      fresh.id = 'usr-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 7);
+      fresh.topic = state.selectedTopic.id === 'mix' ? state.selectedTopic.id : state.selectedTopic.id;
+      fresh.difficulty = state.selectedDifficulty.id;
+      fresh.source = 'haiku';
+      userQuestions.push(fresh);
+      bank.push(fresh);
+      saveUserQuestions();
+      state.currentSource = 'new';
+      q = fresh;
+    } else {
+      q = pickFromBank(pool, reviewSlot);
+      if (!q) {
+        content.innerHTML = `
+          <div class="error">Für diese Auswahl gibt es noch keine Fragen. Wähle ein anderes Thema oder einen API-Schlüssel ein, damit Claude welche generiert.</div>
+          <div class="actions">
+            <button class="secondary" onclick="document.getElementById('reset-link').click()">Zurück</button>
+          </div>
+        `;
+        return;
+      }
+      state.currentSource = stats[q.id] ? 'review' : 'bank';
+    }
+    state.currentQuestion = q;
+    rememberShown(q.id);
+    renderQuestion(q);
+  } catch (err) {
+    content.innerHTML = `
+      <div class="error">${escapeHtml(err.message || 'Unbekannter Fehler')}</div>
+      <div class="actions">
+        <button class="secondary" onclick="document.getElementById('reset-link').click()">Zurück</button>
+        <button class="primary" onclick="loadNextQuestion()">Nochmal versuchen</button>
+      </div>
+    `;
+  }
+}
+
+function renderQuestion(q) {
+  const content = $('quiz-content');
+  let badge = '';
+  if (state.currentSource === 'review') badge = '<span class="review-badge">Wiederholung</span>';
+  else if (state.currentSource === 'new') badge = '<span class="new-badge">Neu (Claude)</span>';
+  content.innerHTML = `
+    <p class="question">${escapeHtml(q.question)} ${badge}</p>
+    <div class="options">
+      ${q.options.map((opt, i) => `
+        <button class="option" data-idx="${i}">
+          <span class="letter">${String.fromCharCode(65 + i)}.</span>
+          ${escapeHtml(opt)}
+        </button>
+      `).join('')}
+    </div>
+  `;
+  document.querySelectorAll('.option').forEach(btn => {
+    btn.onclick = () => handleAnswer(parseInt(btn.dataset.idx));
+  });
+}
+
+function handleAnswer(chosenIdx) {
+  const q = state.currentQuestion;
+  const correct = chosenIdx === q.correct_index;
+
+  if (correct) state.streak++;
+  else state.streak = 0;
+  $('streak-display').textContent = `🔥 ${state.streak}`;
+
+  // Statistik & Session-Counter
+  if (q.id) recordAnswer(q.id, correct);
+  state.sessionCounter++;
+
+  document.querySelectorAll('.option').forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correct_index) btn.classList.add('correct');
+    else if (i === chosenIdx) btn.classList.add('wrong');
+  });
+
+  const feedback = document.createElement('div');
+  feedback.className = 'feedback';
+  feedback.innerHTML = `
+    <h3>${correct ? '✓ Richtig' : '✗ Leider falsch'}</h3>
+    <p>${escapeHtml(q.explanation)}</p>
+    ${q.fun_fact ? `<div class="fun-fact"><strong>Wusstest du?</strong> ${escapeHtml(q.fun_fact)}</div>` : ''}
+    <div class="actions">
+      <button class="secondary" id="back-btn">Themen ändern</button>
+      <button class="primary" id="next-btn">Nächste Frage →</button>
+    </div>
+  `;
+  $('quiz-content').appendChild(feedback);
+  $('next-btn').onclick = loadNextQuestion;
+  $('back-btn').onclick = () => $('reset-link').click();
+}
+
+// Claude API call
+async function fetchQuestion(topic, difficulty, recent) {
+  const recentList = recent.length
+    ? `\n\nVermeide diese kürzlich gestellten Fragen:\n${recent.slice(-10).map(q => '- ' + q).join('\n')}`
+    : '';
+
+  const systemPrompt = `Du bist ein Quiz-Generator für deutsches Allgemeinwissen. Du erstellst genau EINE Multiple-Choice-Frage zum angeforderten Thema.
+
+Anforderungen:
+- Frage sollte allgemeinbildend und faszinierend sein – Dinge, die jeder wissen sollte oder gerne wüsste
+- Schwierigkeit: ${difficulty.hint}
+- Genau 4 Antwortmöglichkeiten, davon genau eine richtig
+- Die Erklärung erklärt, warum die Antwort richtig ist (in 1-3 Sätzen, lehrreich)
+- Der "Wusstest du?"-Fakt ergänzt mit einem überraschenden Detail (1-2 Sätze)
+- Alles auf Deutsch
+- Antworten sollten ähnlich plausibel sein (keine offensichtlich falschen Ablenker), passend zum Schwierigkeitsgrad`;
+
+  const userPrompt = `Erstelle eine Quiz-Frage zum Thema: ${topic.prompt}\nSchwierigkeitsgrad: ${difficulty.label}${recentList}`;
+
+  const schema = {
+    type: 'object',
+    properties: {
+      question: { type: 'string', description: 'Die Quizfrage' },
+      options: {
+        type: 'array',
+        items: { type: 'string' },
+        description: 'Genau 4 Antwortmöglichkeiten',
+      },
+      correct_index: { type: 'integer', description: 'Index (0-3) der richtigen Antwort' },
+      explanation: { type: 'string', description: 'Erklärung der richtigen Antwort' },
+      fun_fact: { type: 'string', description: 'Ein zusätzlicher interessanter Fakt zum Thema' },
+    },
+    required: ['question', 'options', 'correct_index', 'explanation', 'fun_fact'],
+    additionalProperties: false,
+  };
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': state.apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true',
+    },
+    body: JSON.stringify({
+      model: MODEL,
+      max_tokens: 1024,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userPrompt }],
+      output_config: {
+        format: { type: 'json_schema', schema },
+      },
+    }),
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    let errMsg = `API-Fehler (${response.status})`;
+    try {
+      const errJson = JSON.parse(errText);
+      if (errJson.error?.message) errMsg = errJson.error.message;
+    } catch {}
+    throw new Error(errMsg);
+  }
+
+  const data = await response.json();
+  const textBlock = data.content.find(b => b.type === 'text');
+  if (!textBlock) throw new Error('Keine Antwort vom Modell erhalten.');
+
+  const parsed = JSON.parse(textBlock.text);
+  if (!parsed.options || parsed.options.length !== 4) {
+    throw new Error('Modell hat ungültige Frage zurückgegeben.');
+  }
+  return parsed;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+// Service Worker für Offline-Betrieb (nur über https / GitHub Pages aktiv)
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
