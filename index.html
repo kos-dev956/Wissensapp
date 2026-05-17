@@ -274,12 +274,17 @@ function pickWeightedReview(seen) {
 
 function pickFromBank(pool, forceReview = false) {
   if (pool.length === 0) return null;
-  // Niemals eine der zuletzt gezeigten Fragen direkt wieder ziehen, solange genug andere da sind
-  const recent = new Set(state.recentShownIds);
-  const filtered = pool.length > recent.size ? pool.filter(q => !recent.has(q.id)) : pool;
 
-  const seen = filtered.filter(q => stats[q.id]);
-  const unseen = filtered.filter(q => !stats[q.id]);
+  // Schritt 1: zuletzt gezeigte Frage immer ausschließen (außer der Pool hat nur 1)
+  let candidates = pool.length > 1 ? pool.filter(q => q.id !== state.lastShownId) : pool;
+
+  // Schritt 2: wenn möglich, auch die letzten 5 ausschließen — sonst Schritt 1 behalten
+  const recent = new Set(state.recentShownIds);
+  const filtered = candidates.filter(q => !recent.has(q.id));
+  if (filtered.length > 0) candidates = filtered;
+
+  const seen = candidates.filter(q => stats[q.id]);
+  const unseen = candidates.filter(q => !stats[q.id]);
 
   // Erzwungenes Review nur wenn genug Material vorhanden ist
   if (forceReview && seen.length >= 1) return pickWeightedReview(seen);
@@ -290,7 +295,7 @@ function pickFromBank(pool, forceReview = false) {
     return unseen[Math.floor(Math.random() * unseen.length)];
   }
   if (seen.length > 0) return pickWeightedReview(seen);
-  return null;
+  return candidates[Math.floor(Math.random() * candidates.length)] || null;
 }
 
 function rememberShown(id) {
