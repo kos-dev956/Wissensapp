@@ -353,56 +353,6 @@ const QUESTIONS = [
     fun_fact: 'Die Pilgerfahrt nach Mekka muss jeder gesunde, finanziell fähige Muslim mindestens einmal im Leben unternehmen – sie ist einer der größten Menschenströme der Erde.'
   },
 
-  // === SPRACHE & ETYMOLOGIE ===
-  {
-    id: 'spr-001', topic: 'sprache', difficulty: 'leicht',
-    question: 'Aus welcher Sprache stammt das Wort "Algebra"?',
-    options: ['Griechisch', 'Latein', 'Arabisch', 'Sanskrit'],
-    correct_index: 2,
-    explanation: '"Algebra" kommt vom arabischen "al-dschabr" (الجبر), was etwa "das Zusammenfügen" bedeutet und auf ein mathematisches Werk des 9. Jahrhunderts zurückgeht.',
-    fun_fact: 'Das Wort geht auf den persisch-arabischen Mathematiker al-Chwarizmi zurück – aus dessen latinisiertem Namen wurde übrigens auch "Algorithmus" gebildet.'
-  },
-  {
-    id: 'spr-002', topic: 'sprache', difficulty: 'leicht',
-    question: 'Welche Sprache hat weltweit die meisten Muttersprachler?',
-    options: ['Englisch', 'Spanisch', 'Hindi', 'Mandarin-Chinesisch'],
-    correct_index: 3,
-    explanation: 'Mandarin hat mit rund 900 Millionen Muttersprachlern die meisten Erstsprecher weltweit.',
-    fun_fact: 'Englisch hat zwar mit Zweitsprechern zusammen mehr Sprecher insgesamt (~1,5 Mrd.) – aber als Muttersprache liegt Mandarin klar vorn.'
-  },
-  {
-    id: 'spr-003', topic: 'sprache', difficulty: 'mittel',
-    question: 'Welche dieser Sprachen ist NICHT mit dem Deutschen näher verwandt?',
-    options: ['Niederländisch', 'Schwedisch', 'Ungarisch', 'Englisch'],
-    correct_index: 2,
-    explanation: 'Ungarisch gehört zu den uralischen Sprachen und ist nicht indogermanisch – die anderen drei sind germanische Sprachen wie Deutsch.',
-    fun_fact: 'Ungarisch und Finnisch sind enger miteinander verwandt als mit irgendeiner anderen europäischen Sprache – obwohl rund 1000 km zwischen ihnen liegen.'
-  },
-  {
-    id: 'spr-004', topic: 'sprache', difficulty: 'mittel',
-    question: 'Woher stammt das Wort "Roboter"?',
-    options: ['Aus dem Russischen', 'Aus dem Tschechischen', 'Aus dem Japanischen', 'Aus dem Englischen'],
-    correct_index: 1,
-    explanation: 'Karel Čapek führte das Wort 1920 in seinem Theaterstück "R.U.R." ein – von tschechisch "robota" für Zwangsarbeit.',
-    fun_fact: 'Das Wort "Roboter" existiert heute in fast jeder Sprache der Welt – einer der erfolgreichsten Sprachexporte aus dem Tschechischen.'
-  },
-  {
-    id: 'spr-005', topic: 'sprache', difficulty: 'mittel',
-    question: 'Welche Sprache wird im Vatikan offiziell für Gesetze und Dokumente verwendet?',
-    options: ['Italienisch', 'Latein', 'Französisch', 'Deutsch'],
-    correct_index: 1,
-    explanation: 'Latein ist die offizielle Amtssprache des Heiligen Stuhls – Italienisch ist im Vatikan zwar Alltagssprache, aber nicht für offizielle Akte.',
-    fun_fact: 'Der Vatikan ist der einzige Staat, dessen Geldautomaten zeitweise Anweisungen auf Latein anzeigten ("INSERTO SCIDULAM QUAESO UT FACIUNDAM COGNOSCAS RATIONEM").'
-  },
-  {
-    id: 'spr-006', topic: 'sprache', difficulty: 'schwer',
-    question: 'Aus welcher Sprache kommt das deutsche Wort "Tohuwabohu"?',
-    options: ['Jiddisch', 'Hebräisch', 'Arabisch', 'Türkisch'],
-    correct_index: 1,
-    explanation: '"Tohuwabohu" stammt direkt aus dem hebräischen "tohu wa-bohu" im ersten Buch Mose und beschreibt den Urzustand der Welt als "wüst und leer".',
-    fun_fact: 'Die Stelle Genesis 1,2 enthält einen der ältesten erhaltenen Hinweise auf das Wort – es bedeutete ursprünglich nicht "Chaos", sondern eher "unstrukturiert, leer".'
-  },
-
   // === WIRTSCHAFT ===
   {
     id: 'wirt-001', topic: 'wirtschaft', difficulty: 'leicht',
@@ -706,42 +656,6 @@ QUESTIONS.push(
   }
 );
 
-// === SPRACHE & ETYMOLOGIE (Erweiterung) ===
-QUESTIONS.push(
-  {
-    id: 'spr-007', topic: 'sprache', difficulty: 'leicht',
-    question: 'Welche Sprache ist die offizielle Amtssprache Brasiliens?',
-    options: ['Spanisch', 'Portugiesisch', 'Brasilianisch', 'Französisch'],
-    correct_index: 1,
-    explanation: 'Brasilien wurde von Portugal kolonisiert und hat als einziges Land Südamerikas Portugiesisch als Amtssprache.',
-    fun_fact: 'Mit über 200 Millionen Sprechern leben heute mehr Menschen mit Portugiesisch als Muttersprache in Brasilien als in Portugal selbst – etwa zwanzigmal so viele.'
-  },
-  {
-    id: 'spr-008', topic: 'sprache', difficulty: 'mittel',
-    question: 'Was bedeutet das lateinische "et cetera" (etc.)?',
-    options: ['und sicher', 'und so weiter', 'und niemals', 'und alle'],
-    correct_index: 1,
-    explanation: '"Et cetera" heißt wörtlich "und das Übrige" – also "und so weiter".',
-    fun_fact: 'Das Komma vor "etc." ist im Deutschen optional – im Englischen hingegen gilt das Auslassen oft als Stilfehler.'
-  },
-  {
-    id: 'spr-009', topic: 'sprache', difficulty: 'mittel',
-    question: 'Welche Sprache hat Jesus laut Forschung im Alltag gesprochen?',
-    options: ['Hebräisch', 'Aramäisch', 'Griechisch', 'Latein'],
-    correct_index: 1,
-    explanation: 'Jesus und die meisten Juden in Galiläa sprachen im ersten Jahrhundert Aramäisch – Hebräisch war damals schon eher liturgische Sprache.',
-    fun_fact: 'Im Neuen Testament sind einige aramäische Worte direkt überliefert, etwa "Talita kum" ("Mädchen, steh auf") oder "Eli, Eli, lama sabachthani".'
-  },
-  {
-    id: 'spr-010', topic: 'sprache', difficulty: 'schwer',
-    question: 'Was bedeutet das griechische Präfix "hyper-" wörtlich?',
-    options: ['unter', 'über', 'gegen', 'zusammen'],
-    correct_index: 1,
-    explanation: '"Hyper-" stammt aus dem Altgriechischen und bedeutet "über" oder "über das Maß hinaus" – Beispiele: Hyperaktivität, Hypertonie.',
-    fun_fact: 'Sein Gegenteil ist "hypo-" (unter): Hypothermie ist Unterkühlung, Hyperthermie Überhitzung – ein einziger Vokal entscheidet den medizinischen Ernstfall.'
-  }
-);
-
 // === WIRTSCHAFT (Erweiterung) ===
 QUESTIONS.push(
   {
@@ -892,22 +806,6 @@ QUESTIONS.push(
   { id: 'phil-022', topic: 'philosophie', difficulty: 'schwer', question: 'Welcher Philosoph erklärte „Gott ist tot" und kritisierte christliche Moral als Sklavenmoral?', options: ['Kierkegaard', 'Nietzsche', 'Schopenhauer', 'Marx'], correct_index: 1, explanation: 'Friedrich Nietzsche prägte den Satz „Gott ist tot" in „Die fröhliche Wissenschaft" (1882) und in „Also sprach Zarathustra".', fun_fact: 'Nietzsche meinte nicht buchstäblich, dass Gott gestorben sei – er beschrieb den kulturellen Bedeutungsverlust religiöser Werte in der Moderne und warnte vor dem entstehenden Nihilismus.' }
 );
 
-// --- Sprache & Etymologie ---
-QUESTIONS.push(
-  { id: 'spr-011', topic: 'sprache', difficulty: 'leicht', question: 'Aus welcher Sprache stammt das Grußwort „Ciao"?', options: ['Spanisch', 'Italienisch', 'Portugiesisch', 'Französisch'], correct_index: 1, explanation: '„Ciao" kommt aus dem venezianischen Dialekt und bedeutete ursprünglich „(Ich bin Euer) Sklave/Diener" („s-ciao vostro").', fun_fact: 'Vom unterwürfigen Gruß hat sich das Wort zum lockeren „Hallo/Tschüss" entwickelt – und ist heute eines der internationalsten italienischen Wörter.' },
-  { id: 'spr-012', topic: 'sprache', difficulty: 'leicht', question: 'Welche Sprache wird in Schweden gesprochen?', options: ['Norwegisch', 'Schwedisch', 'Finnisch', 'Dänisch'], correct_index: 1, explanation: 'Schwedisch ist die offizielle Amtssprache Schwedens – eine nordgermanische Sprache, eng verwandt mit Norwegisch und Dänisch.', fun_fact: 'Schweden, Norweger und Dänen verstehen sich untereinander oft besser als Deutsche und Niederländer – obwohl es offiziell drei verschiedene Sprachen sind.' },
-  { id: 'spr-013', topic: 'sprache', difficulty: 'leicht', question: 'In welcher Sprache heißt „Danke" „Merci"?', options: ['Spanisch', 'Italienisch', 'Französisch', 'Portugiesisch'], correct_index: 2, explanation: '„Merci" ist Französisch für „Danke" – es stammt vom lateinischen „mercedem" (Lohn, Gnade).', fun_fact: 'Im südwestdeutschen und schweizerischen Dialekt sagt man oft „Merci" als Dankesform – Spuren der jahrhundertelangen sprachlichen Nähe zu Frankreich.' },
-  { id: 'spr-014', topic: 'sprache', difficulty: 'leicht', question: 'Was bedeutet „arrivederci" auf Italienisch?', options: ['Guten Morgen', 'Bitte', 'Auf Wiedersehen', 'Entschuldigung'], correct_index: 2, explanation: '„Arrivederci" wird beim Abschied gesagt – wörtlich „bis zum Wiedersehen".', fun_fact: 'Im sehr formellen Kontext sagt man „Arrivederla" – mit „La" als Höflichkeitsform statt „ci" („uns").' },
-  { id: 'spr-015', topic: 'sprache', difficulty: 'mittel', question: 'Welche Sprachfamilie umfasst Spanisch, Französisch und Italienisch?', options: ['Germanische Sprachen', 'Slawische Sprachen', 'Romanische Sprachen', 'Keltische Sprachen'], correct_index: 2, explanation: 'Diese Sprachen sind alle aus dem Vulgärlatein des Römischen Reichs entstanden und gehören zur romanischen Sprachfamilie.', fun_fact: 'Sardisch (auf Sardinien gesprochen) gilt als die heute lebende Sprache, die dem Latein am nächsten ist – mehr als Italienisch.' },
-  { id: 'spr-016', topic: 'sprache', difficulty: 'mittel', question: 'Wie viele offizielle Landessprachen hat die Schweiz?', options: ['2', '3', '4', '5'], correct_index: 2, explanation: 'Die Schweiz hat vier Amtssprachen: Deutsch, Französisch, Italienisch und Rätoromanisch.', fun_fact: 'Rätoromanisch wird nur von rund 0,5 % der Bevölkerung im Kanton Graubünden gesprochen – ist aber trotzdem im Bundesverkehr offiziell anerkannt.' },
-  { id: 'spr-017', topic: 'sprache', difficulty: 'mittel', question: 'Welche Schrift verwendet die russische Sprache?', options: ['Lateinisch', 'Griechisch', 'Kyrillisch', 'Arabisch'], correct_index: 2, explanation: 'Russisch wird im kyrillischen Alphabet geschrieben – einer Schrift, die im 9. Jahrhundert für die Christianisierung slawischer Völker entwickelt wurde.', fun_fact: 'Die Schrift ist nach dem byzantinischen Mönch Kyrill benannt – wahrscheinlich war er aber gar nicht der Erfinder; das Alphabet entwickelten vermutlich seine Schüler.' },
-  { id: 'spr-018', topic: 'sprache', difficulty: 'mittel', question: 'Aus welcher Sprache kommt das deutsche Wort „Kaffee"?', options: ['Italienisch', 'Türkisch / Arabisch', 'Französisch', 'Niederländisch'], correct_index: 1, explanation: 'Das Wort kam aus dem Arabischen „qahwa" über Türkisch („kahve") und Italienisch („caffè") ins Deutsche.', fun_fact: 'Im Arabischen bezeichnete „qahwa" ursprünglich Wein – als der Koran Wein verbot, wurde das Wort auf das anregende Getränk aus gerösteten Bohnen übertragen.' },
-  { id: 'spr-019', topic: 'sprache', difficulty: 'schwer', question: 'Aus welcher Sprache stammt das Wort „Tabu"?', options: ['Polynesisch', 'Japanisch', 'Hawaiisch', 'Arabisch'], correct_index: 0, explanation: '„Tabu" stammt aus polynesischen Sprachen (Tonga: „tapu") und wurde von James Cook 1777 nach Europa gebracht.', fun_fact: 'Cook übernahm das Wort in seinen Reiseberichten – und damit hat eine winzige Inselgruppe mitten im Pazifik praktisch alle modernen europäischen Sprachen um einen Begriff bereichert.' },
-  { id: 'spr-020', topic: 'sprache', difficulty: 'schwer', question: 'Welche Sprache ist neben Hebräisch zweite offizielle Amtssprache Israels?', options: ['Englisch', 'Jiddisch', 'Arabisch', 'Russisch'], correct_index: 2, explanation: 'Arabisch hat in Israel einen besonderen Status, auch wenn 2018 ein Gesetz Hebräisch als alleinige „Staatssprache" festlegte – Arabisch behält besondere Rechte.', fun_fact: 'Modernes Hebräisch wurde im 19./20. Jahrhundert aktiv wiederbelebt – als einzige Sprache der Welt, die nach Jahrhunderten nur liturgischen Gebrauchs wieder zur Alltagssprache wurde.' },
-  { id: 'spr-021', topic: 'sprache', difficulty: 'schwer', question: 'Wie viele in der Verfassung anerkannte Amtssprachen hat Indien?', options: ['6', '11', '22', '47'], correct_index: 2, explanation: 'Die indische Verfassung listet 22 „Scheduled Languages" – darunter Hindi, Bengali, Tamil, Urdu, Punjabi und viele weitere.', fun_fact: 'Hindi und Englisch sind die einzigen Sprachen, in denen Bundesgesetze offiziell publiziert werden – die übrigen 20 dürfen aber in einzelnen Bundesstaaten Verwaltungssprache sein.' },
-  { id: 'spr-022', topic: 'sprache', difficulty: 'schwer', question: 'Aus welcher Sprache stammt das deutsche Wort „Alkohol"?', options: ['Latein', 'Griechisch', 'Arabisch', 'Sanskrit'], correct_index: 2, explanation: '„Alkohol" kommt vom arabischen „al-kuhl" – ursprünglich ein feines Pulver (Antimonsulfid) zur Augenkosmetik. Erst später wurde der Begriff auf Destillate übertragen.', fun_fact: 'Viele wissenschaftliche Begriffe – Algebra, Algorithmus, Alkohol, Azimut – haben den arabischen Artikel „al-" am Anfang und stammen aus mittelalterlichen islamischen Wissenschaften.' }
-);
-
 // --- Wirtschaft ---
 QUESTIONS.push(
   { id: 'wirt-011', topic: 'wirtschaft', difficulty: 'leicht', question: 'Welche Währung wird im Vereinigten Königreich verwendet?', options: ['Euro', 'Britisches Pfund', 'Schweizer Franken', 'US-Dollar'], correct_index: 1, explanation: 'Das Pfund Sterling (GBP) ist die offizielle Währung des Vereinigten Königreichs – auch nach EU-Beitritt nie ersetzt.', fun_fact: 'Das Pfund Sterling ist die älteste noch genutzte Währung der Welt – seit über 1.200 Jahren in Umlauf.' },
@@ -1007,6 +905,38 @@ QUESTIONS.push(
   { id: 'nat-030', topic: 'natur', difficulty: 'mittel', question: 'Welche zwei Forscher entdeckten 1953 die Doppelhelixstruktur der DNA?', options: ['Watson und Crick', 'Mendel und Darwin', 'Curie und Becquerel', 'Pasteur und Koch'], correct_index: 0, explanation: 'James Watson und Francis Crick veröffentlichten 1953 in „Nature" das Modell der DNA-Doppelhelix – Grundlage der modernen Genetik.', fun_fact: 'Eine entscheidende Vorarbeit lieferte die britische Forscherin Rosalind Franklin mit ihren Röntgenbildern – sie wurde aber lange übergangen und starb 1958 vor der Nobelpreis-Verleihung 1962.' },
   { id: 'nat-031', topic: 'natur', difficulty: 'leicht', question: 'Welche drei klassischen Aggregatzustände gibt es?', options: ['fest, weich, hart', 'fest, flüssig, gasförmig', 'warm, kalt, neutral', 'sichtbar, unsichtbar, dampfend'], correct_index: 1, explanation: 'Im Schulunterricht lernen wir drei Aggregatzustände: fest, flüssig und gasförmig.', fun_fact: 'Tatsächlich gibt es einen vierten – das Plasma. Es ist sogar der häufigste Zustand sichtbarer Materie im Universum (Sterne bestehen daraus).' },
   { id: 'nat-032', topic: 'natur', difficulty: 'leicht', question: 'In welcher Reihenfolge stehen die Planeten von der Sonne aus?', options: ['Merkur, Venus, Mars, Erde, Jupiter, Saturn, Uranus, Neptun', 'Merkur, Venus, Erde, Mars, Jupiter, Saturn, Uranus, Neptun', 'Venus, Merkur, Erde, Mars, Saturn, Jupiter, Uranus, Neptun', 'Merkur, Erde, Venus, Mars, Jupiter, Saturn, Neptun, Uranus'], correct_index: 1, explanation: 'Die Reihenfolge: Merkur, Venus, Erde, Mars, Jupiter, Saturn, Uranus, Neptun.', fun_fact: 'Eine bekannte Eselsbrücke: „Mein Vater erklärt mir jeden Sonntag unseren Nachthimmel" – die Anfangsbuchstaben passen zur Planetenreihenfolge.' }
+);
+
+// === NEUE KATEGORIEN: Computer & KI ===
+
+// --- Computer & Internet ---
+QUESTIONS.push(
+  { id: 'comp-001', topic: 'computer', difficulty: 'leicht', question: 'Wer ist Mitgründer von Microsoft?', options: ['Steve Jobs', 'Bill Gates', 'Mark Zuckerberg', 'Larry Page'], correct_index: 1, explanation: 'Bill Gates gründete Microsoft 1975 zusammen mit seinem Schulfreund Paul Allen.', fun_fact: 'Bill Gates brach sein Studium in Harvard ab, um Microsoft zu gründen – Jahre später wurde er der reichste Mensch der Welt und ist heute einer der größten privaten Spender für Gesundheits- und Bildungsprojekte.' },
+  { id: 'comp-002', topic: 'computer', difficulty: 'leicht', question: 'Wer war Mitgründer von Apple?', options: ['Bill Gates', 'Steve Jobs', 'Jeff Bezos', 'Elon Musk'], correct_index: 1, explanation: 'Steve Jobs gründete Apple 1976 zusammen mit Steve Wozniak und Ronald Wayne in einer Garage in Los Altos.', fun_fact: 'Ronald Wayne verkaufte seinen 10%-Anteil an Apple nur zwei Wochen später für 800 US-Dollar – heute wären sie hunderte Milliarden wert.' },
+  { id: 'comp-003', topic: 'computer', difficulty: 'leicht', question: 'In welchem Jahr wurde Google gegründet?', options: ['1995', '1998', '2001', '2004'], correct_index: 1, explanation: 'Larry Page und Sergey Brin gründeten Google 1998 als Doktoranden an der Stanford University.', fun_fact: 'Der Name „Google" ist eine Verballhornung von „Googol" – der mathematischen Zahl 10¹⁰⁰. Eigentlich war es ein Tippfehler, der hängenblieb.' },
+  { id: 'comp-004', topic: 'computer', difficulty: 'leicht', question: 'Wofür steht die Abkürzung „WWW"?', options: ['Wide World Web', 'World Wide Web', 'World Web Wire', 'Web Wide World'], correct_index: 1, explanation: 'World Wide Web – das System verlinkter Hypertext-Dokumente, das über das Internet abrufbar ist.', fun_fact: 'Das Internet und das WWW sind nicht dasselbe: Das Internet ist die Infrastruktur (das Netz), das WWW ist ein Dienst, der darüber läuft – wie E-Mail, FTP oder Online-Gaming auch.' },
+  { id: 'comp-005', topic: 'computer', difficulty: 'mittel', question: 'Welches Betriebssystem ist als kostenlose Open-Source-Alternative zu Windows und macOS bekannt?', options: ['Linux', 'Unix', 'BSD', 'Solaris'], correct_index: 0, explanation: 'Linux wurde 1991 vom finnischen Studenten Linus Torvalds entwickelt und ist heute Grundlage unzähliger Server, Smartphones (Android) und eingebetteter Systeme.', fun_fact: 'Auf den meisten Web-Servern der Welt läuft Linux – ohne es würde das heutige Internet schlicht nicht funktionieren.' },
+  { id: 'comp-006', topic: 'computer', difficulty: 'mittel', question: 'Wofür steht „USB" beim USB-Stick?', options: ['Ultra Speed Bus', 'Universal Serial Bus', 'Unified System Board', 'United Storage Bridge'], correct_index: 1, explanation: 'Universal Serial Bus – ein 1996 eingeführter Standard, um Peripheriegeräte einheitlich an Computer anzuschließen.', fun_fact: 'Vor USB hatte jeder Gerätetyp seinen eigenen Anschluss – Tastatur (PS/2), Maus (PS/2 oder seriell), Drucker (parallel), Modem (seriell). USB ersetzte sie alle.' },
+  { id: 'comp-007', topic: 'computer', difficulty: 'mittel', question: 'Wer erfand 1989 das World Wide Web?', options: ['Bill Gates', 'Steve Jobs', 'Tim Berners-Lee', 'Vint Cerf'], correct_index: 2, explanation: 'Der britische Physiker Tim Berners-Lee entwickelte am CERN in Genf das WWW – ursprünglich, damit Wissenschaftler einfacher Dokumente austauschen konnten.', fun_fact: 'Berners-Lee verzichtete bewusst auf ein Patent – das WWW gehört seither niemandem. Hätte er es patentiert, wäre er heute einer der reichsten Menschen der Welt.' },
+  { id: 'comp-008', topic: 'computer', difficulty: 'mittel', question: 'Was bedeutet „Cloud Computing"?', options: ['Wettervorhersage per Computer', 'Daten und Programme auf entfernten Servern statt lokal speichern', 'Verschlüsselung von Internetverbindungen', 'Funkübertragung zwischen Geräten'], correct_index: 1, explanation: 'Beim Cloud Computing liegen Daten und Anwendungen nicht auf dem eigenen Gerät, sondern auf Servern eines Anbieters (z. B. Amazon AWS, Microsoft Azure, Google Cloud).', fun_fact: 'Wenn du Fotos in iCloud, Dropbox oder Google Drive speicherst, liegen sie physisch in riesigen Rechenzentren – oft an mehreren Standorten weltweit gleichzeitig.' },
+  { id: 'comp-009', topic: 'computer', difficulty: 'schwer', question: 'Welche Programmiersprache wurde 1991 von Guido van Rossum entwickelt und ist heute die populärste Sprache für KI und Data Science?', options: ['JavaScript', 'Java', 'Python', 'C++'], correct_index: 2, explanation: 'Python wurde mit Fokus auf Lesbarkeit entwickelt und hat sich besonders in Wissenschaft, KI und Data Science durchgesetzt.', fun_fact: 'Der Name „Python" stammt nicht von der Schlange, sondern von der britischen Comedy-Truppe „Monty Python" – van Rossum war Fan.' },
+  { id: 'comp-010', topic: 'computer', difficulty: 'schwer', question: 'Wofür steht das „TCP" in „TCP/IP"?', options: ['Total Computing Protocol', 'Transmission Control Protocol', 'Transfer Connection Protocol', 'Terminal Communication Protocol'], correct_index: 1, explanation: 'Transmission Control Protocol – sorgt zusammen mit IP (Internet Protocol) dafür, dass Datenpakete zuverlässig und in der richtigen Reihenfolge ankommen.', fun_fact: 'TCP/IP wurde in den 1970er-Jahren von Vint Cerf und Bob Kahn entwickelt – sie gelten deshalb als die „Väter des Internets".' },
+  { id: 'comp-011', topic: 'computer', difficulty: 'schwer', question: 'In welchem Jahr ging Wikipedia online?', options: ['1995', '1998', '2001', '2005'], correct_index: 2, explanation: 'Wikipedia wurde am 15. Januar 2001 von Jimmy Wales und Larry Sanger gestartet – heute die größte Enzyklopädie der Geschichte.', fun_fact: 'Die englische Wikipedia hat über 6 Millionen Artikel, die deutsche über 2,8 Millionen – komplett von Freiwilligen geschrieben und gepflegt.' },
+  { id: 'comp-012', topic: 'computer', difficulty: 'mittel', question: 'Welcher Konzern entwickelte und veröffentlichte das Smartphone-Betriebssystem Android?', options: ['Microsoft', 'Apple', 'Google', 'Samsung'], correct_index: 2, explanation: 'Google übernahm 2005 die kleine Firma „Android Inc." und brachte 2008 das erste Smartphone mit Android auf den Markt.', fun_fact: 'Android basiert auf dem Linux-Kernel – jedes Android-Smartphone ist im Inneren ein modifiziertes Linux-System.' }
+);
+
+// --- Künstliche Intelligenz ---
+QUESTIONS.push(
+  { id: 'ki-001', topic: 'ki', difficulty: 'leicht', question: 'Wie heißt die bekannte KI-Anwendung von OpenAI, die seit Ende 2022 Texte generiert?', options: ['Siri', 'Alexa', 'ChatGPT', 'Cortana'], correct_index: 2, explanation: 'ChatGPT wurde am 30. November 2022 veröffentlicht und erreichte in 5 Tagen 1 Million Nutzer – schneller als jeder Dienst zuvor.', fun_fact: 'ChatGPT basiert auf GPT-Sprachmodellen („Generative Pre-trained Transformer") – die zugrundeliegende Transformer-Architektur stammt aus einer Google-Forschungsarbeit von 2017.' },
+  { id: 'ki-002', topic: 'ki', difficulty: 'leicht', question: 'Welcher Computer besiegte 1997 als erster den amtierenden Schachweltmeister Garri Kasparow?', options: ['Watson', 'Deep Blue', 'AlphaZero', 'HAL 9000'], correct_index: 1, explanation: 'IBMs „Deep Blue" gewann den entscheidenden sechsten Partienkampf gegen Kasparow – eine historische Zäsur in der KI-Geschichte.', fun_fact: 'Kasparow vermutete nach der Niederlage, IBM habe einen Menschen eingesetzt – so unerklärlich gut spielte die Maschine. IBM zerstörte Deep Blue kurz danach, statt einen Rückkampf zu spielen.' },
+  { id: 'ki-003', topic: 'ki', difficulty: 'leicht', question: 'Wofür steht die Abkürzung „KI" auf Deutsch?', options: ['Komplexe Information', 'Künstliche Intelligenz', 'Kognitive Information', 'Kontrollierte Iteration'], correct_index: 1, explanation: 'KI = Künstliche Intelligenz – im Englischen AI (Artificial Intelligence).', fun_fact: 'Der Begriff „Artificial Intelligence" wurde nicht erst kürzlich erfunden – schon 1956, also vor fast 70 Jahren, prägte ihn der US-Informatiker John McCarthy.' },
+  { id: 'ki-004', topic: 'ki', difficulty: 'leicht', question: 'Wie heißt der Sprachassistent von Apple, der auf iPhone, iPad und Mac eingebaut ist?', options: ['Alexa', 'Cortana', 'Siri', 'Google Assistant'], correct_index: 2, explanation: 'Siri wurde 2011 mit dem iPhone 4S vorgestellt – als einer der ersten massentauglichen Sprachassistenten.', fun_fact: 'Siri begann als eigenständige App eines US-Forschungslabors – Apple kaufte das Start-up 2010 und integrierte die Technik in iOS.' },
+  { id: 'ki-005', topic: 'ki', difficulty: 'mittel', question: 'Was misst der „Turing-Test", den Alan Turing 1950 vorschlug?', options: ['Die Rechenleistung eines Computers', 'Ob ein Mensch in einem Chat-Gespräch Maschine von Mensch unterscheiden kann', 'Die Speicherkapazität einer Festplatte', 'Die Sicherheit eines Algorithmus'], correct_index: 1, explanation: 'Beim Turing-Test chattet ein Mensch blind mit einem anderen Menschen und einer Maschine – wenn er die Maschine nicht erkennt, gilt sie als „intelligent".', fun_fact: 'Moderne Chatbots wie GPT-4 können in vielen Kontexten den klassischen Turing-Test bestehen – der Test gilt deshalb in der Forschung heute als überholt.' },
+  { id: 'ki-006', topic: 'ki', difficulty: 'mittel', question: 'Welches KI-System besiegte 2016 den damaligen Go-Weltmeister Lee Sedol?', options: ['Watson', 'Deep Blue', 'AlphaGo', 'GPT'], correct_index: 2, explanation: 'AlphaGo von DeepMind (Google-Tochter) gewann 4:1 gegen Lee Sedol – Go galt zuvor als zu komplex für Computer.', fun_fact: 'AlphaGo machte in der zweiten Partie den heute legendären „Zug 37", den menschliche Experten zunächst für einen Fehler hielten – er erwies sich als brillanter Strategiezug, den kein Mensch je gespielt hatte.' },
+  { id: 'ki-007', topic: 'ki', difficulty: 'mittel', question: 'Wofür steht die Abkürzung „LLM" im Zusammenhang mit moderner KI?', options: ['Long Logical Memory', 'Large Language Model', 'Linear Learning Machine', 'Local Loop Module'], correct_index: 1, explanation: 'Large Language Models sind sehr große neuronale Netze, die auf riesigen Textmengen trainiert werden – Basis von ChatGPT, Claude, Gemini etc.', fun_fact: 'GPT-3 wurde 2020 mit etwa 175 Milliarden Parametern trainiert – das Training kostete vermutlich um die 5 Millionen US-Dollar an reiner Rechenzeit.' },
+  { id: 'ki-008', topic: 'ki', difficulty: 'schwer', question: 'Wer prägte 1956 auf der Dartmouth-Konferenz den Begriff „Artificial Intelligence"?', options: ['Alan Turing', 'John McCarthy', 'Marvin Minsky', 'Geoffrey Hinton'], correct_index: 1, explanation: 'John McCarthy organisierte 1956 zusammen mit Marvin Minsky, Claude Shannon und Nathaniel Rochester die Dartmouth-Konferenz – die als Geburtsstunde der KI als Forschungsdisziplin gilt.', fun_fact: 'Die Teilnehmer der Konferenz dachten, das Problem der KI sei innerhalb weniger Jahrzehnte gelöst – stattdessen folgten mehrere „KI-Winter" mit jahrzehntelanger Stagnation, bevor in den 2010ern der Durchbruch kam.' },
+  { id: 'ki-009', topic: 'ki', difficulty: 'schwer', question: 'Welche bahnbrechende Architektur stellte das Google-Paper „Attention Is All You Need" (2017) vor?', options: ['Convolutional Neural Network', 'Transformer', 'Recurrent Neural Network', 'Boltzmann-Maschine'], correct_index: 1, explanation: 'Die Transformer-Architektur ist Grundlage praktisch aller modernen Sprachmodelle – GPT, BERT, Claude, Gemini bauen darauf auf.', fun_fact: 'Das „T" in „GPT" steht genau dafür: Generative Pre-trained Transformer. Ohne diese Arbeit von 2017 gäbe es ChatGPT heute nicht.' },
+  { id: 'ki-010', topic: 'ki', difficulty: 'schwer', question: 'Wie verhält sich „Deep Learning" zu „Machine Learning"?', options: ['Beides ist dasselbe', 'Deep Learning ist eine Unterart von Machine Learning mit mehrschichtigen neuronalen Netzen', 'Machine Learning ist eine Unterart von Deep Learning', 'Sie haben nichts miteinander zu tun'], correct_index: 1, explanation: 'Deep Learning ist eine Methode des Machine Learnings, die besonders tiefe neuronale Netze mit vielen Schichten nutzt – ML ist der Oberbegriff.', fun_fact: 'Deep Learning erlebte erst um 2012 seinen Durchbruch, als das Netzwerk „AlexNet" einen Bildklassifikations-Wettbewerb haushoch gewann – getrieben durch Grafikkarten (GPUs), die das Training erst praktikabel machten.' }
 );
 
 // Damit auch das alte Skript-Tag-Setup funktioniert
