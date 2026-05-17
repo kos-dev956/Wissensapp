@@ -204,8 +204,9 @@
       <span><b id="bank-seen">–</b> gesehen</span>
     </div>
     <div class="bank-actions">
-      <button class="bank-btn" id="export-btn" title="Bank als JSON-Datei sichern">↓ Bank exportieren</button>
-      <button class="bank-btn" id="import-btn" title="Bank aus JSON-Datei laden">↑ Bank importieren</button>
+      <button class="bank-btn" id="export-full-btn" title="Vollständige Sicherung inkl. Statistik – für eigene Geräte">↓ Sichern</button>
+      <button class="bank-btn" id="export-share-btn" title="Nur Fragen ohne Statistik – zum Teilen mit anderen">↗ Teilen</button>
+      <button class="bank-btn" id="import-btn" title="Bank aus JSON-Datei laden">↑ Import</button>
       <input type="file" id="import-file" accept=".json,application/json" style="display: none;">
     </div>
     <div id="setup-error" class="error hidden"></div>
@@ -367,21 +368,27 @@ function recordAnswer(qId, correct) {
   saveStats();
 }
 
-function exportBank() {
+function exportBank(mode = 'full') {
+  // mode = 'full'  → eigene Geräte: Fragen + Statistik + Lösch-Einträge
+  // mode = 'share' → Weitergabe: nur die Fragen, keine persönlichen Daten
   const data = {
     app: 'wissensapp',
     version: 1,
+    mode: mode,
     exportedAt: new Date().toISOString(),
     userQuestions: userQuestions,
-    stats: stats,
-    deletedIds: [...deletedIds],
   };
+  if (mode === 'full') {
+    data.stats = stats;
+    data.deletedIds = [...deletedIds];
+  }
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
   const dateStr = new Date().toISOString().split('T')[0];
-  a.download = `wissensapp-bank-${dateStr}.json`;
+  const suffix = mode === 'full' ? 'voll' : 'teilen';
+  a.download = `wissensapp-bank-${dateStr}-${suffix}.json`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -529,7 +536,8 @@ $('start-btn').onclick = () => {
   loadNextQuestion();
 };
 
-$('export-btn').onclick = exportBank;
+$('export-full-btn').onclick = () => exportBank('full');
+$('export-share-btn').onclick = () => exportBank('share');
 $('import-btn').onclick = () => $('import-file').click();
 $('import-file').onchange = (e) => {
   const file = e.target.files && e.target.files[0];
