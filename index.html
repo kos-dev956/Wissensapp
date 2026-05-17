@@ -72,6 +72,14 @@
   }
   .topic-chip:hover { border-color: var(--accent); }
   .topic-chip.selected { background: var(--accent); color: white; border-color: var(--accent); }
+  .chip-count {
+    display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px;
+    background: var(--border); color: var(--muted); font-size: 11px; font-weight: 600;
+    vertical-align: 1px;
+  }
+  .topic-chip.selected .chip-count, .diff-chip.selected .chip-count {
+    background: rgba(255,255,255,0.25); color: white;
+  }
   .difficulty-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 6px 0 14px; }
   .diff-chip {
     border: 1px solid var(--border); background: var(--input-bg); padding: 10px 8px; border-radius: 10px;
@@ -280,6 +288,13 @@ function filterPool(topicId, difficultyId) {
   );
 }
 
+function countInBank(topicId, difficultyId) {
+  let pool = bank;
+  if (topicId && topicId !== 'mix') pool = pool.filter(q => q.topic === topicId);
+  if (difficultyId) pool = pool.filter(q => q.difficulty === difficultyId);
+  return pool.length;
+}
+
 function pickWeightedReview(seen) {
   // Älter + öfter falsch = höheres Gewicht
   const now = Date.now();
@@ -341,11 +356,18 @@ function recordAnswer(qId, correct) {
 }
 
 function updateBankInfo() {
-  const total = bank.length;
-  const seenCount = bank.filter(q => stats[q.id]).length;
-  const totalEl = $('bank-total'); const seenEl = $('bank-seen');
-  if (totalEl) totalEl.textContent = total;
-  if (seenEl) seenEl.textContent = seenCount;
+  const infoEl = $('bank-info');
+  if (!infoEl) return;
+  const topicId = state.selectedTopic && state.selectedTopic.id;
+  const diffId = state.selectedDifficulty && state.selectedDifficulty.id;
+  if (topicId && diffId) {
+    const pool = filterPool(topicId, diffId);
+    const seen = pool.filter(q => stats[q.id]).length;
+    infoEl.innerHTML = `<span>Auswahl: <b>${pool.length}</b> Fragen</span><span><b>${seen}</b> gesehen</span>`;
+  } else {
+    const seen = bank.filter(q => stats[q.id]).length;
+    infoEl.innerHTML = `<span>Bank: <b>${bank.length}</b> Fragen</span><span><b>${seen}</b> gesehen</span>`;
+  }
 }
 
 const $ = (id) => document.getElementById(id);
@@ -354,16 +376,23 @@ const $ = (id) => document.getElementById(id);
 function renderTopics() {
   const list = $('topic-list');
   list.innerHTML = '';
+  const diffId = state.selectedDifficulty && state.selectedDifficulty.id;
   TOPICS.forEach(t => {
     const btn = document.createElement('button');
     btn.className = 'topic-chip';
-    btn.textContent = t.label;
+    const count = countInBank(t.id, diffId);
+    btn.innerHTML = `${t.label}<span class="chip-count">${count}</span>`;
     btn.onclick = () => {
       state.selectedTopic = t;
       document.querySelectorAll('.topic-chip').forEach(c => c.classList.remove('selected'));
       btn.classList.add('selected');
+      renderDifficulties();
+      updateBankInfo();
       updateStartButton();
     };
+    if (state.selectedTopic && state.selectedTopic.id === t.id) {
+      btn.classList.add('selected');
+    }
     list.appendChild(btn);
   });
 }
@@ -371,15 +400,19 @@ function renderTopics() {
 function renderDifficulties() {
   const list = $('difficulty-list');
   list.innerHTML = '';
+  const topicId = state.selectedTopic && state.selectedTopic.id;
   DIFFICULTIES.forEach(d => {
     const btn = document.createElement('button');
     btn.className = 'diff-chip';
-    btn.innerHTML = `${d.label}<span class="diff-sub">${d.sub}</span>`;
+    const count = countInBank(topicId, d.id);
+    btn.innerHTML = `${d.label}<span class="chip-count">${count}</span><span class="diff-sub">${d.sub}</span>`;
     btn.onclick = () => {
       state.selectedDifficulty = d;
       localStorage.setItem(DIFFICULTY_KEY, d.id);
       document.querySelectorAll('.diff-chip').forEach(c => c.classList.remove('selected'));
       btn.classList.add('selected');
+      renderTopics();
+      updateBankInfo();
       updateStartButton();
     };
     if (state.selectedDifficulty && state.selectedDifficulty.id === d.id) {
