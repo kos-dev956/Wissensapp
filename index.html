@@ -413,21 +413,32 @@ function importBank(file) {
       userQuestions = userQuestions.concat(newQuestions);
       saveUserQuestions();
 
-      // Statistik mergen (Counts addieren, lastSeen max)
-      for (const [id, s] of Object.entries(importedStats)) {
-        if (stats[id]) {
-          stats[id].correct = (stats[id].correct || 0) + (s.correct || 0);
-          stats[id].wrong = (stats[id].wrong || 0) + (s.wrong || 0);
-          stats[id].lastSeenMs = Math.max(stats[id].lastSeenMs || 0, s.lastSeenMs || 0);
-        } else {
-          stats[id] = { correct: s.correct || 0, wrong: s.wrong || 0, lastSeenMs: s.lastSeenMs || 0 };
+      // Statistik + Löschungen nur übernehmen, wenn vorhanden UND der User es bestätigt
+      const statCount = Object.keys(importedStats).length;
+      const delCount = importedDeleted.length;
+      const hasExtras = statCount > 0 || delCount > 0;
+      let mergedExtras = false;
+      if (hasExtras) {
+        const ownStats = Object.keys(stats).length;
+        const message = ownStats > 0
+          ? `Diese Datei enthält zusätzlich Statistik (${statCount} Einträge) und ${delCount} Lösch-Einträge.\n\nMit deiner eigenen Statistik zusammenführen?\n\n• OK: Ja (für Sync zwischen eigenen Geräten)\n• Abbrechen: Nein, nur die Fragen behalten`
+          : `Diese Datei enthält auch Statistik (${statCount} Einträge) und ${delCount} Lösch-Einträge.\n\nIn deine leere Bank übernehmen?\n\n• OK: Ja\n• Abbrechen: Nein, nur die Fragen`;
+        if (confirm(message)) {
+          for (const [id, s] of Object.entries(importedStats)) {
+            if (stats[id]) {
+              stats[id].correct = (stats[id].correct || 0) + (s.correct || 0);
+              stats[id].wrong = (stats[id].wrong || 0) + (s.wrong || 0);
+              stats[id].lastSeenMs = Math.max(stats[id].lastSeenMs || 0, s.lastSeenMs || 0);
+            } else {
+              stats[id] = { correct: s.correct || 0, wrong: s.wrong || 0, lastSeenMs: s.lastSeenMs || 0 };
+            }
+          }
+          saveStats();
+          for (const id of importedDeleted) deletedIds.add(id);
+          saveDeleted();
+          mergedExtras = true;
         }
       }
-      saveStats();
-
-      // Lösch-Liste mergen (Vereinigung)
-      for (const id of importedDeleted) deletedIds.add(id);
-      saveDeleted();
 
       // Bank neu zusammenstellen + UI aktualisieren
       bank = (window.QUESTIONS || []).concat(userQuestions).filter(q => !deletedIds.has(q.id));
@@ -435,7 +446,9 @@ function importBank(file) {
       renderDifficulties();
       updateBankInfo();
 
-      alert(`Import erfolgreich!\n${newQuestions.length} neue Fragen hinzugefügt.\nBank gesamt: ${bank.length} Fragen.`);
+      let msg = `Import erfolgreich!\n${newQuestions.length} neue Fragen hinzugefügt.\nBank gesamt: ${bank.length} Fragen.`;
+      if (hasExtras) msg += mergedExtras ? '\nStatistik wurde übernommen.' : '\nStatistik wurde nicht übernommen (deine eigene bleibt unverändert).';
+      alert(msg);
     } catch (err) {
       alert('Import fehlgeschlagen: ' + (err.message || 'Unbekannter Fehler'));
     }
