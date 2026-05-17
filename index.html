@@ -151,6 +151,14 @@
     border-radius: 999px; font-size: 11px; font-weight: 500; margin-left: 6px;
     text-transform: uppercase; letter-spacing: 0.3px;
   }
+  .report-row { display: flex; justify-content: flex-end; margin-top: 14px; }
+  .report-btn {
+    background: transparent; border: 1px solid var(--border); color: var(--muted);
+    padding: 6px 10px; border-radius: 8px; font-size: 12px; cursor: pointer;
+    font-family: inherit; transition: all 0.15s ease;
+  }
+  .report-btn:hover:not(:disabled) { color: var(--wrong); border-color: var(--wrong); }
+  .report-btn.reported { color: var(--correct); border-color: var(--correct); cursor: default; }
 </style>
 </head>
 <body>
@@ -217,11 +225,12 @@ const DIFFICULTIES = [
   { id: 'schwer',  label: 'Schwer',  sub: 'Anspruchsvoll',   hint: 'anspruchsvoll – Detailwissen, knifflige Ablenker, fordert auch Belesene heraus' },
 ];
 
-const MODEL = 'claude-haiku-4-5';
+const MODEL = 'claude-sonnet-4-6';
 const STORAGE_KEY = 'wissensapp_apikey_v1';
 const DIFFICULTY_KEY = 'wissensapp_difficulty_v1';
 const USER_QUESTIONS_KEY = 'wissensapp_user_questions_v1';
 const STATS_KEY = 'wissensapp_stats_v1';
+const DELETED_KEY = 'wissensapp_deleted_v1';
 
 const state = {
   apiKey: '',
@@ -235,18 +244,34 @@ const state = {
   recentShownIds: [], // letzte ~5 IDs, niemals direkt wiederholen
 };
 
-// Bank = built-in QUESTIONS + Haiku-generierte aus localStorage
+// Bank = built-in QUESTIONS + KI-generierte aus localStorage, minus gelöschte
 let userQuestions = [];
 let bank = [];
 let stats = {}; // id → { lastSeenMs, correct, wrong }
+let deletedIds = new Set(); // vom User entfernte Fragen
 
 function loadBankAndStats() {
   try { userQuestions = JSON.parse(localStorage.getItem(USER_QUESTIONS_KEY) || '[]'); } catch { userQuestions = []; }
   try { stats = JSON.parse(localStorage.getItem(STATS_KEY) || '{}'); } catch { stats = {}; }
-  bank = (window.QUESTIONS || []).concat(userQuestions);
+  try { deletedIds = new Set(JSON.parse(localStorage.getItem(DELETED_KEY) || '[]')); } catch { deletedIds = new Set(); }
+  bank = (window.QUESTIONS || []).concat(userQuestions).filter(q => !deletedIds.has(q.id));
 }
 function saveUserQuestions() { localStorage.setItem(USER_QUESTIONS_KEY, JSON.stringify(userQuestions)); }
 function saveStats() { localStorage.setItem(STATS_KEY, JSON.stringify(stats)); }
+function saveDeleted() { localStorage.setItem(DELETED_KEY, JSON.stringify([...deletedIds])); }
+
+function deleteQuestion(qId) {
+  if (!qId) return;
+  deletedIds.add(qId);
+  saveDeleted();
+  // Aus userQuestions raus, falls dort
+  userQuestions = userQuestions.filter(q => q.id !== qId);
+  saveUserQuestions();
+  // Aus Statistik raus
+  if (stats[qId]) { delete stats[qId]; saveStats(); }
+  // Bank neu zusammenstellen
+  bank = (window.QUESTIONS || []).concat(userQuestions).filter(q => !deletedIds.has(q.id));
+}
 
 function filterPool(topicId, difficultyId) {
   return bank.filter(q =>
@@ -523,6 +548,9 @@ function handleAnswer(chosenIdx) {
     <h3>${correct ? '✓ Richtig' : '✗ Leider falsch'}</h3>
     <p>${escapeHtml(q.explanation)}</p>
     ${q.fun_fact ? `<div class="fun-fact"><strong>Wusstest du?</strong> ${escapeHtml(q.fun_fact)}</div>` : ''}
+    <div class="report-row">
+      <button class="report-btn" id="report-btn" title="Diese Frage als falsch/unwichtig entfernen">⚠️ Frage entfernen</button>
+    </div>
     <div class="actions">
       <button class="secondary" id="back-btn">Themen ändern</button>
       <button class="primary" id="next-btn">Nächste Frage →</button>
@@ -531,6 +559,15 @@ function handleAnswer(chosenIdx) {
   $('quiz-content').appendChild(feedback);
   $('next-btn').onclick = loadNextQuestion;
   $('back-btn').onclick = () => $('reset-link').click();
+  $('report-btn').onclick = () => {
+    if (!q.id) return;
+    deleteQuestion(q.id);
+    const btn = $('report-btn');
+    btn.textContent = '✓ Entfernt — taucht nicht mehr auf';
+    btn.disabled = true;
+    btn.classList.add('reported');
+    updateBankInfo();
+  };
 }
 
 // Claude API call
@@ -541,14 +578,21 @@ async function fetchQuestion(topic, difficulty, recent) {
 
   const systemPrompt = `Du bist ein Quiz-Generator für deutsches Allgemeinwissen. Du erstellst genau EINE Multiple-Choice-Frage zum angeforderten Thema.
 
+WICHTIGSTE REGEL — Faktentreue:
+- Generiere NUR Fragen über Fakten, bei denen du dir absolut sicher bist (Schulwissen, weltbekannte Ereignisse, etablierte Personen)
+- Wenn du dir bei einer Jahreszahl, einem Namen oder einem Detail nicht 100% sicher bist: wähle ein ANDERES Thema, niemals raten
+- Lieber eine einfachere, sicher korrekte Frage als eine spektakulärere unsichere
+- Auch der "Wusstest du?"-Fakt muss sicher belegt sein, sonst weglassen oder vereinfachen
+
 Anforderungen:
-- Frage sollte allgemeinbildend und faszinierend sein – Dinge, die jeder wissen sollte oder gerne wüsste
+- Frage sollte allgemeinbildend sein – Dinge, die zum Pflichtwissen gehören
 - Schwierigkeit: ${difficulty.hint}
 - Genau 4 Antwortmöglichkeiten, davon genau eine richtig
-- Die Erklärung erklärt, warum die Antwort richtig ist (in 1-3 Sätzen, lehrreich)
-- Der "Wusstest du?"-Fakt ergänzt mit einem überraschenden Detail (1-2 Sätze)
+- Die anderen 3 Antworten müssen eindeutig falsch sein (keine ähnlich plausiblen Alternativen, wo zwei Antworten irgendwie stimmen könnten)
+- Die Erklärung erklärt, warum die Antwort richtig ist (1-3 Sätze, sachlich)
+- Der "Wusstest du?"-Fakt ergänzt mit einem überraschenden Detail (1-2 Sätze, ebenfalls faktentreu)
 - Alles auf Deutsch
-- Antworten sollten ähnlich plausibel sein (keine offensichtlich falschen Ablenker), passend zum Schwierigkeitsgrad`;
+- Konzentriere dich auf kanonisches Allgemeinwissen (große Ereignisse, bekannte Persönlichkeiten, Hauptstädte, Grundlagen), nicht auf obskure Trivia`;
 
   const userPrompt = `Erstelle eine Quiz-Frage zum Thema: ${topic.prompt}\nSchwierigkeitsgrad: ${difficulty.label}${recentList}`;
 
